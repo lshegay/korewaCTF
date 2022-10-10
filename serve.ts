@@ -1,3 +1,3 @@
-import serve from "./app/mod.ts";
+import serve from './app/mod.ts';
 
 serve();

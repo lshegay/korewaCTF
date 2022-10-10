@@ -2,20 +2,16 @@
   "compilerOptions": {
     "strict": true
   },
-  "lint": {
-    "files": {
-      "include": ["serve.ts", "app/"]
-    }
-  },
+  "importMap": "./import_map.json",
   "fmt": {
-    "files": {
-      "include": ["serve.ts", "app/"]
-    },
     "options": {
       "indentWidth": 2,
       "lineWidth": 80,
       "singleQuote": true,
       "useTabs": false
     }
+  },
+  "tasks": {
+    "dev": "deno run --watch --allow-read --allow-write --allow-net --allow-env serve.ts"
   }
 }
