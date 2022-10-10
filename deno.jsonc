@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "strict": true
+  },
+  "lint": {
+    "files": {
+      "include": ["serve.ts", "app/"]
+    }
+  },
+  "fmt": {
+    "files": {
+      "include": ["serve.ts", "app/"]
+    },
+    "options": {
+      "indentWidth": 2,
+      "lineWidth": 80,
+      "singleQuote": true,
+      "useTabs": false
+    }
+  }
+}
