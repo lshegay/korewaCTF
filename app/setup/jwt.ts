@@ -10,7 +10,7 @@ export let secret!: CryptoKey;
  * Creates JWT data which can be used for user authorization and validation.
  * @param payload any data as object
  * @param exp expiration time in seconds
- * @returns {string} JWT string
+ * @returns JWT string
  */
 export const createToken = async (
   payload: Record<string, DocumentValue>,
@@ -27,7 +27,7 @@ export const createToken = async (
 /**
  * Verifies if user and their JWT are valid.
  * @param jwt JWT string
- * @returns {Promise<Payload | null>}
+ * @returns
  */
 export const verifyToken = async (jwt: string) => {
   try {
@@ -44,7 +44,7 @@ export const verifyToken = async (jwt: string) => {
  *
  * Loads global secret variable with value.
  * @param dir Directory where to save secret JsonWebKey data
- * @returns {Promise<CryptoKey>} secret CryptoKey
+ * @returns secret CryptoKey
  */
 export const defineSecret = async (dir: string) => {
   const filename = 'secret.json';

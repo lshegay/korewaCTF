@@ -15,7 +15,10 @@ export const tasks: RouteHandler = async ({ searchParams }) => {
   const page = parseInt(searchParams.get('page') ?? '1', 10);
   const limit = parseInt(searchParams.get('limit') ?? '10', 10);
 
-  const result = (await storage.tasks.findMany()).slice((page - 1) * limit, (page - 1) * limit + limit);
+  const result = (await storage.tasks.findMany()).slice(
+    (page - 1) * limit,
+    (page - 1) * limit + limit,
+  );
 
   return jsend.success({ tasks: result });
 };

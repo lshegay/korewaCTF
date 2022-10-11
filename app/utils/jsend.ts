@@ -10,17 +10,19 @@ export enum Status {
   ERROR = 'error',
 }
 
-export type ResponseSuccess<T extends Record<string, unknown>> = {
+export type Dictionary = Record<string, unknown>;
+
+export type ResponseSuccess<T extends Dictionary> = {
   status: Status.SUCCESS;
   data: Partial<T> | null;
 };
 
-export type ResponseFail<T extends Record<string, unknown>> = {
+export type ResponseFail<T extends Dictionary> = {
   status: Status.FAIL;
   data: Partial<T> | null;
 };
 
-export type ResponseError<T extends Record<string, unknown>> = {
+export type ResponseError<T extends Dictionary> = {
   status: Status.ERROR;
   message: string;
   data?: Partial<T>;
@@ -28,32 +30,32 @@ export type ResponseError<T extends Record<string, unknown>> = {
 };
 
 export type Response<
-  TSuccess extends Record<string, unknown>,
-  TFail extends TSuccess,
-  TError extends Record<string, unknown>,
+  TSuccess extends Dictionary,
+  TFail extends Dictionary,
+  TError extends Dictionary,
 > =
   | ResponseSuccess<TSuccess>
   | ResponseFail<TFail>
   | ResponseError<TError>;
 
-const filterUndefines = <T extends Record<string, unknown>>(data: T): Partial<T> =>
+const filterUndefines = <T extends Dictionary>(data: T): Partial<T> =>
   filterValues(data, (v) => typeof v != 'undefined') as Partial<T>;
 
-export const success = <T extends Record<string, unknown>>(
+export const success = <T extends Dictionary>(
   data?: T,
 ): ResponseSuccess<T> => ({
   status: Status.SUCCESS,
   data: typeof data == 'undefined' ? null : filterUndefines<T>(data),
 });
 
-export const fail = <T extends Record<string, unknown>>(
+export const fail = <T extends Dictionary>(
   data?: Partial<T>,
 ): ResponseFail<T> => ({
   status: Status.FAIL,
   data: typeof data == 'undefined' ? null : filterUndefines(data),
 });
 
-export const error = <T extends Record<string, unknown>>(
+export const error = <T extends Dictionary>(
   message: string,
   data?: T,
   code?: number,
@@ -68,7 +70,7 @@ export const error = <T extends Record<string, unknown>>(
   return response;
 };
 
-export const zodFail = <T extends Record<string, unknown>>(
+export const zodFail = <T extends Dictionary>(
   safeParse: SafeParseError<T>,
 ) => {
   return fail(
@@ -83,7 +85,7 @@ export const zodFail = <T extends Record<string, unknown>>(
  * IsValid returns true if obj is valid for JSend API or not
  * @param obj - the JSend response
  */
-export const isValid = (obj?: Record<string, unknown>): boolean => {
+export const isValid = (obj?: Dictionary): boolean => {
   if (!obj) return false;
   if (!obj.status) return false;
 

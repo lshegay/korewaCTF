@@ -22,7 +22,9 @@ export const createTask: RouteHandler = async ({ raw }) => {
   const schema = z.object({
     name: z.string().transform((v) => v.trim()),
     content: z.string(),
-    tags: z.array(z.string()).default([]).transform((v) => v.map((tag) => tag.trim())),
+    tags: z.array(z.string()).default([]).transform((v) =>
+      v.map((tag) => tag.trim())
+    ),
     file: z.instanceof(File).optional(),
     flag: z.string().transform((v) => v.trim()),
   });
@@ -122,11 +124,15 @@ export const deleteTask: RouteHandler = async ({ raw }) => {
   if (!result.success) return jsend.zodFail(result);
 
   const task = await storage.tasks.deleteOne({ id: result.data.id });
-  if (!task) return jsend.fail({ id: `No Task with such id "${result.data.id}".` });
-  
+  if (!task) {
+    return jsend.fail({ id: `No Task with such id "${result.data.id}".` });
+  }
+
   if (task.filePath) {
     try {
-      Deno.remove(resolve(config.publicDir, task.filePath.replace('/files/', '')));
+      Deno.remove(
+        resolve(config.publicDir, task.filePath.replace('/files/', '')),
+      );
     } catch (_) {
       // nothing happens then
     }
