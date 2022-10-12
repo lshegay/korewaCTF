@@ -7,6 +7,7 @@
     "hextools": "https://deno.land/x/hextools@v1.0.0/mod.ts",
     "nanoid": "https://deno.land/x/nanoid@v3.0.0/async.ts",
     "form_data_to_object": "https://deno.land/x/form_data_to_object@0.1.0/mod.ts",
+    "queryString": "https://deno.land/x/querystring@v1.0.2/mod.js",
 
     "path": "https://deno.land/std@0.159.0/path/mod.ts"
   }

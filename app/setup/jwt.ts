@@ -9,7 +9,7 @@ export let secret!: CryptoKey;
 /**
  * Creates JWT data which can be used for user authorization and validation.
  * @param payload any data as object
- * @param exp expiration time in seconds
+ * @param sessionAge expiration time in ms
  * @returns JWT string
  */
 export const createToken = async (

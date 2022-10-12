@@ -4,17 +4,18 @@ import { nanoid } from 'nanoid';
 import { config } from '../../mod.ts';
 import { createToken } from '../../setup/jwt.ts';
 import { storage } from '../../setup/storage.ts';
-import { RouteHandler } from '../../utils/types.ts';
 import { UserRole } from './mod.ts';
-import { useRoute } from '../../utils/resolver.ts';
+import { useRoute } from '../../utils/pogo-resolver/mod.ts';
 import { createPbkdf2Hash } from '../../setup/crypto.ts';
+import { authorized } from '../../rules/auth.ts';
 
-export const login: RouteHandler = useRoute({
+export const login = useRoute({
+  rules: [authorized({ shouldBeAuthorized: false })],
   schema: z.object({
     email: z.string().email().transform((v: string) => v.trim()),
     password: z.string(),
   }),
-  mutation: async ({ input, res }) => {
+  resolve: async ({ input, res }) => {
     const passwordHash = await createPbkdf2Hash(input.password, config.salt);
 
     const user = await storage.users.findOne({
@@ -39,17 +40,18 @@ export const login: RouteHandler = useRoute({
   },
 });
 
-export const register: RouteHandler = useRoute({
+export const register = useRoute({
+  rules: [authorized({ shouldBeAuthorized: false })],
   schema: z.object({
     email: z.string().email().transform((v) => v.trim()),
     nickname: z.string().transform((v) => v.trim()),
     password: z.string(),
     password2: z.string(),
-  }).refine((data) => data.password === data.password2, {
+  }).refine((data) => data.password == data.password2, {
     message: 'Passwords don\'t match',
     path: ['password2'],
   }),
-  mutation: async ({ input, res }) => {
+  resolve: async ({ input, res }) => {
     let isEmail = false;
     let isNickname = false;
     let user = await storage.users.findOne((doc) => {

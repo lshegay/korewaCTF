@@ -1,22 +1,32 @@
 import ServerRequest from 'https://deno.land/x/pogo@v0.6.0/lib/request.ts';
 import { RouteHandlerResult } from 'https://deno.land/x/pogo@v0.6.0/lib/types.ts';
 import ServerResponse from 'https://deno.land/x/pogo@v0.6.0/lib/response.ts';
+import { parse as parseQuery } from 'queryString';
+
 import { Toolkit } from 'pogo';
 import { z, ZodType } from 'zod';
 import { formDataToObject } from 'form_data_to_object';
 import * as jsend from './jsend.ts';
-import { User } from '../resolvers/users/mod.ts';
+import { RuleHandler } from './rule.ts';
 
-export type ResolverRequest = ServerRequest & { user?: User };
-export type RouteHandler = (
-  request: ResolverRequest,
-  h: Toolkit,
-) => RouteHandlerResult;
+import { User } from '../../resolvers/users/mod.ts';
+
+export { useRule } from './rule.ts';
+
+export type RequestDictionary = { user?: User };
 
 export enum InputType {
   JSON = 0,
   FORM_DATA = 1,
+  PARAMS = 2,
 }
+
+export type ResolverRequest = ServerRequest & RequestDictionary;
+
+export type RouteHandler = (
+  req: ResolverRequest,
+  h: Toolkit,
+) => RouteHandlerResult;
 
 export type ResolverOptions = {
   req: ResolverRequest;
@@ -34,30 +44,23 @@ export type ResolverOptions = {
 export type RouteOptions<
   Z extends jsend.Dictionary,
 > = {
-  schema: ZodType<Z>;
-  query?: never;
-  mutation: (
+  schema?: ZodType<Z>;
+  resolve: (
     options: ResolverOptions & { input: z.infer<ZodType<Z>> },
   ) => RouteHandlerResult;
   type?: InputType;
-} | {
-  schema?: never;
-  query: (options: ResolverOptions) => RouteHandlerResult;
-  mutation?: never;
-  type?: InputType;
-};
+  rules?: RuleHandler[];
+}
 
 export const useRoute = <
   Z extends jsend.Dictionary,
 >(options: RouteOptions<Z>) => {
-  const { schema, mutation, query, type } = {
+  const { schema, resolve, type, rules } = {
     type: InputType.JSON,
     ...options,
   };
 
-  const r: RouteHandler = async (req, h) => {
-    const { raw } = req;
-
+  const r: RouteHandler = async (request, h) => {
     const res = {
       success: (data?: jsend.Dictionary | undefined) =>
         h.response(jsend.success(data)),
@@ -67,7 +70,21 @@ export const useRoute = <
         h.response(jsend.error(message, data)),
     };
 
-    if (!schema) return query({ req, h, res });
+    let req = request;
+    if (rules) {
+      for (let i = 0; i < rules.length; i++) {
+        const rule = rules[i];
+
+        const result = await rule({ h, req, res });
+        if (result.req) {
+          req = result.req;
+        } else return result.res;
+      }
+    }
+
+    const { raw } = req;
+
+    if (!schema) return resolve({ req, h, res, input: {} as Z });
 
     let input: Record<string, unknown>;
     switch (type) {
@@ -88,12 +105,24 @@ export const useRoute = <
         }
         break;
       }
+      case InputType.PARAMS: {
+        try {
+          input = parseQuery(request.search, {
+            arrayFormat: 'bracket',
+            parseBooleans: true,
+            parseNumbers: true,
+          });
+        } catch (_) {
+          return jsend.error('Input params are not valid.');
+        }
+        break;
+      }
     }
 
     const result = await schema.safeParseAsync(input);
     if (!result.success) return jsend.zodFail(result);
 
-    return mutation({ input: result.data, h, req, res });
+    return resolve({ input: result.data, h, req, res });
   };
 
   return r;
