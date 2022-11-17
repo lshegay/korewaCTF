@@ -2,6 +2,7 @@ import { authorized } from '../../rules/auth.ts';
 import { manipulator } from '../../setup/manipulator.ts';
 
 export const profile = manipulator.useRoute({
+  url: '/profile',
   rules: [authorized()],
   resolve: ({ req: { user }, res }) => {
     if (!user) return res.error('Something happened on server.');

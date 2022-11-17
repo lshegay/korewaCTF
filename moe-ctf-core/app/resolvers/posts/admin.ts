@@ -1,6 +1,6 @@
+import { filterValues } from 'https://deno.land/std@0.159.0/collections/filter_values.ts';
 import { z } from 'zod';
 import { nanoid } from 'nanoid';
-import { filterValues } from 'https://deno.land/std@0.159.0/collections/filter_values.ts';
 
 import { manipulator } from '../../setup/manipulator.ts';
 import { InputType } from '../../utils/pogo-resolver/mod.ts';
@@ -9,6 +9,7 @@ import { authorized } from '../../rules/auth.ts';
 import { UserRole } from '../users/mod.ts';
 
 export const createPost = manipulator.useRoute({
+  url: '/admin/post',
   method: 'POST',
   rules: [authorized({ role: UserRole.ADMIN })],
   schema: z.object({
@@ -31,6 +32,7 @@ export const createPost = manipulator.useRoute({
 });
 
 export const updatePost = manipulator.useRoute({
+  url: '/admin/updatePost',
   method: 'POST',
   rules: [authorized({ role: UserRole.ADMIN })],
   schema: z.object({
@@ -57,8 +59,10 @@ export const updatePost = manipulator.useRoute({
 });
 
 export const deletePost = manipulator.useRoute({
+  url: '/admin/deletePost',
   method: 'POST',
   rules: [authorized({ role: UserRole.ADMIN })],
+  type: InputType.JSON,
   schema: z.object({ id: z.string() }),
   resolve: async ({ input, res }) => {
     const post = await storage.posts.deleteOne({ id: input.id });

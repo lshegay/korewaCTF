@@ -1,6 +1,6 @@
 import { crypto } from 'https://deno.land/std@0.159.0/crypto/mod.ts';
-import { DocumentValue } from 'https://deno.land/x/aloedb@0.9.0/mod.ts';
-import { create, verify } from 'https://deno.land/x/djwt@v2.7/mod.ts';
+import { DocumentValue } from 'aloedb';
+import { create, verify } from 'djwt';
 
 import { resolve } from 'path';
 
@@ -32,8 +32,7 @@ export const createToken = async (
 export const verifyToken = async (jwt: string) => {
   try {
     return await verify(jwt, secret);
-  } catch (e) {
-    console.log(e);
+  } catch (_) {
     return null;
   }
 };

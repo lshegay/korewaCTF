@@ -1,9 +1,10 @@
 /** JSend specification wrapper functions */
 
-import { SafeParseError } from 'https://deno.land/x/zod@v3.19.1/types.ts';
-import { mapValues } from 'https://deno.land/std@0.159.0/collections/map_values.ts';
-import { filterValues } from 'https://deno.land/std@0.159.0/collections/filter_values.ts';
-import { isNil, Maybe } from "../mod.ts";
+export type Maybe<T> = undefined | null | T;
+
+export function isNil<T>(v: Maybe<T>): v is undefined | null {
+  return v === null || v === undefined;
+}
 
 export enum Status {
   SUCCESS = 'success',
@@ -16,12 +17,12 @@ export type DocumentArray = unknown[];
 
 export type ResponseSuccess<T extends Dictionary> = {
   status: Status.SUCCESS;
-  data: Partial<T> | null;
+  data: Partial<T> | null; // TODO: make it T | undefined
 };
 
 export type ResponseFail<T extends Dictionary> = {
   status: Status.FAIL;
-  data: Partial<T> | null;
+  data: Partial<T> | null; // TODO: make it T | undefined
 };
 
 export type ResponseError<T extends Dictionary> = {
@@ -32,33 +33,39 @@ export type ResponseError<T extends Dictionary> = {
 };
 
 export type Response<
-  TSuccess extends Dictionary,
-  TFail extends Dictionary,
-  TError extends Dictionary,
+  TSuccess extends Dictionary = Dictionary,
+  TFail extends Dictionary = Dictionary,
+  TError extends Dictionary = Dictionary,
 > =
   | ResponseSuccess<TSuccess>
   | ResponseFail<TFail>
   | ResponseError<TError>;
 
-const filterUndefines = <T extends Dictionary>(data: T) =>
-  filterValues(data, (v) => typeof v != 'undefined') as Partial<T>;
+const filterUndefines = <T extends Dictionary, K extends keyof T>(data: T) => {
+  const ret: Partial<T> = {};
+  const entries = Object.entries(data) as [K, T[K]][];
+
+  for (const [key, value] of entries) {
+    if (typeof value != 'undefined') {
+      ret[key] = value;
+    }
+  }
+
+  return ret;
+}
 
 export const success = <T extends Dictionary>(
   data?: Maybe<T>,
 ): ResponseSuccess<T> => ({
   status: Status.SUCCESS,
-  data: isNil(data)
-    ? null
-    : filterUndefines(data),
+  data: isNil(data) ? null : filterUndefines(data),
 });
 
 export const fail = <T extends Dictionary>(
   data?: Maybe<Partial<T>>,
 ): ResponseFail<T> => ({
   status: Status.FAIL,
-  data: isNil(data)
-    ? null
-    : filterUndefines(data),
+  data: isNil(data) ? null : filterUndefines(data),
 });
 
 export const error = <T extends Dictionary>(
@@ -74,17 +81,6 @@ export const error = <T extends Dictionary>(
   if (typeof data != 'undefined') response.data = filterUndefines(data);
 
   return response;
-};
-
-export const zodFail = <T extends Dictionary>(
-  safeParse: SafeParseError<T>,
-) => {
-  return fail(
-    mapValues(
-      safeParse.error.flatten().fieldErrors,
-      (v: unknown) => Array.isArray(v) ? v.join(', ') : v,
-    ),
-  );
 };
 
 /**

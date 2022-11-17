@@ -18,7 +18,7 @@ const DEFAULT_OPTIONS: CorsOptions = {
 };
 
 /**
- * Addes cors feature
+ * Addes cors feature.
  */
 export const cors = useRule<Partial<CorsOptions>>({
   resolve: ({ req, options: _options }) => {
@@ -28,16 +28,14 @@ export const cors = useRule<Partial<CorsOptions>>({
     };
 
     const requestOrigin = req.headers.get('origin');
-    if (!requestOrigin) {
-      req.response.status = 404;
-      return req.response;
-    }
 
     if (options.origin == '*') {
       req.response.headers.append('Access-Control-Allow-Origin', '*');
     } else if (
-      (Array.isArray(options.origin) && options.origin.includes(requestOrigin)) ||
-      (typeof options.origin == 'string' && options.origin == requestOrigin)
+      requestOrigin &&
+      ((Array.isArray(options.origin) &&
+        options.origin.includes(requestOrigin)) ||
+        (typeof options.origin == 'string' && options.origin == requestOrigin))
     ) {
       req.response.headers.append('Access-Control-Allow-Origin', requestOrigin);
       req.response.headers.append('Vary', 'Origin');

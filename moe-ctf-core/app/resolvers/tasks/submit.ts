@@ -1,17 +1,21 @@
 import { z } from 'zod';
+
 import { authorized } from '../../rules/auth.ts';
 import { createPbkdf2Hash } from '../../setup/crypto.ts';
 import { storage } from '../../setup/storage.ts';
 import { manipulator } from '../../setup/manipulator.ts';
 import { UserRole } from '../users/mod.ts';
+import { InputType } from '../../utils/pogo-resolver/mod.ts';
 
 export const submit = manipulator.useRoute({
+  url: '/submit',
   method: 'POST',
   rules: [authorized()],
   schema: z.object({
     id: z.string(),
     flag: z.string().transform((v) => v.trim()),
   }),
+  type: InputType.JSON,
   resolve: async ({ req, res, input }) => {
     const taskId = input.id;
 

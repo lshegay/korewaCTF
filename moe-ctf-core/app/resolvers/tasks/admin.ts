@@ -1,7 +1,7 @@
+import { filterValues } from 'https://deno.land/std@0.159.0/collections/filter_values.ts';
 import { z } from 'zod';
 import { resolve } from 'path';
 import { nanoid } from 'nanoid';
-import { filterValues } from 'https://deno.land/std@0.159.0/collections/filter_values.ts';
 
 import { InputType } from '../../utils/pogo-resolver/mod.ts';
 import { manipulator } from '../../setup/manipulator.ts';
@@ -12,6 +12,7 @@ import { UserRole } from '../users/mod.ts';
 import { createPbkdf2Hash } from '../../setup/crypto.ts';
 
 export const createTask = manipulator.useRoute({
+  url: '/admin/task',
   method: 'POST',
   rules: [authorized({ role: UserRole.ADMIN })],
   schema: z.object({
@@ -78,6 +79,7 @@ export const createTask = manipulator.useRoute({
 });
 
 export const updateTask = manipulator.useRoute({
+  url: '/admin/updateTask',
   method: 'POST',
   rules: [authorized({ role: UserRole.ADMIN })],
   schema: z.object({
@@ -154,9 +156,11 @@ export const updateTask = manipulator.useRoute({
 });
 
 export const deleteTask = manipulator.useRoute({
+  url: '/admin/deleteTask',
   method: 'POST',
   rules: [authorized({ role: UserRole.ADMIN })],
   schema: z.object({ id: z.string() }),
+  type: InputType.JSON,
   resolve: async ({ input, res }) => {
     const task = await storage.tasks.deleteOne({ id: input.id });
     if (!task) {

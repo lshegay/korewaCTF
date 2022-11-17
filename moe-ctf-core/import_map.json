@@ -8,6 +8,7 @@
     "nanoid": "https://deno.land/x/nanoid@v3.0.0/async.ts",
     "form_data_to_object": "https://deno.land/x/form_data_to_object@0.1.0/mod.ts",
     "queryString": "https://deno.land/x/querystring@v1.0.2/mod.js",
+    "url-join": "https://deno.land/x/url_join@1.0.0/mod.ts",
     
     "path": "https://deno.land/std@0.159.0/path/mod.ts"
   }

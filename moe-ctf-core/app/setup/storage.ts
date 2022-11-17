@@ -1,12 +1,14 @@
 import { Database, DatabaseConfig } from 'aloedb';
 import { resolve } from 'path';
+
 import { User } from '../resolvers/users/mod.ts';
 import { Task } from '../resolvers/tasks/mod.ts';
+import { Post } from '../resolvers/posts/types.ts';
 
 type Storage = {
   users: Database<User>;
   tasks: Database<Task>;
-  posts: Database;
+  posts: Database<Post>;
   settings: Database;
 };
 

@@ -8,14 +8,17 @@ import { UserRole } from './mod.ts';
 import { manipulator } from '../../setup/manipulator.ts';
 import { createPbkdf2Hash } from '../../setup/crypto.ts';
 import { authorized } from '../../rules/auth.ts';
+import { InputType } from '../../utils/pogo-resolver/mod.ts';
 
 export const login = manipulator.useRoute({
+  url: '/login',
   method: 'POST',
   rules: [authorized({ shouldBeAuthorized: false })],
   schema: z.object({
     email: z.string().email().transform((v: string) => v.trim()),
     password: z.string(),
   }),
+  type: InputType.JSON,
   resolve: async ({ input, res }) => {
     const passwordHash = await createPbkdf2Hash(input.password);
 
@@ -26,7 +29,7 @@ export const login = manipulator.useRoute({
 
     if (!user) {
       return res.fail({
-        email: 'User has not been found',
+        email: 'Invalid email or password',
       });
     }
 
@@ -34,7 +37,17 @@ export const login = manipulator.useRoute({
       sub: user.id,
     }, config.sessionAge);
 
-    return res.success({ token });
+    return res.success({
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        content: user.content,
+        nickname: user.nickname,
+        role: user.role,
+        registered: user.registered,
+      },
+    });
 
     /* return res.success().state('token', {
       value: token,
@@ -45,6 +58,7 @@ export const login = manipulator.useRoute({
 });
 
 export const register = manipulator.useRoute({
+  url: '/register',
   method: 'POST',
   rules: [authorized({ shouldBeAuthorized: false })],
   schema: z.object({
@@ -56,6 +70,7 @@ export const register = manipulator.useRoute({
     message: 'Passwords don\'t match',
     path: ['password2'],
   }),
+  type: InputType.JSON,
   resolve: async ({ input, res }) => {
     let isEmail = false;
     let isNickname = false;

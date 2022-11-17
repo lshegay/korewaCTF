@@ -2,15 +2,14 @@ import { z } from 'zod';
 import { manipulator } from '../../setup/manipulator.ts';
 import { authorized } from '../../rules/auth.ts';
 import { storage } from '../../setup/storage.ts';
-import { InputType } from '../../utils/pogo-resolver/mod.ts';
 import { UserRole } from '../users/mod.ts';
 
 export const task = manipulator.useRoute({
+  url: '/task',
   rules: [authorized()],
   schema: z.object({
     id: z.string(),
   }),
-  type: InputType.PARAMS,
   resolve: async ({ req, res, input }) => {
     const taskId = input.id;
 
@@ -29,12 +28,12 @@ export const task = manipulator.useRoute({
 });
 
 export const tasks = manipulator.useRoute({
+  url: '/tasks',
   rules: [authorized()],
   schema: z.object({
     page: z.number().min(1).optional(),
     limit: z.number().min(1).optional(),
   }),
-  type: InputType.PARAMS,
   resolve: async ({ req, res, input }) => {
     const page = input.page ?? 1;
     const limit = input.limit ?? 10;

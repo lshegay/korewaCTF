@@ -6,6 +6,7 @@ import { manipulator } from '../../setup/manipulator.ts';
 import { UserRole } from '../users/mod.ts';
 
 export const scoreboard = manipulator.useRoute({
+  url: '/scoreboard',
   rules: [authorized()],
   resolve: async ({ res }) => {
     const users = await storage.users.findMany({

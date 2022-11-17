@@ -1,3 +1,3 @@
-import { defineManipulator } from "../utils/pogo-resolver/mod.ts";
+import { createManipulator, Manipulator } from '../utils/pogo-resolver/mod.ts';
 
-export const manipulator = defineManipulator();
+export const manipulator: Manipulator = createManipulator();

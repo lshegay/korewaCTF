@@ -5,7 +5,7 @@ import { Toolkit } from 'pogo';
 import { z, ZodType } from 'zod';
 
 import * as jsend from './jsend.ts';
-import { InputType } from './mod.ts';
+import { InputType } from './manipulator.ts';
 import { RuleHandler } from './rule.ts';
 import { User } from '../../resolvers/users/mod.ts';
 
@@ -38,7 +38,8 @@ export type RouteOptions<
   resolve: (
     options: ResolverOptions & { input: z.infer<ZodType<Z>> },
   ) => RouteHandlerResult;
-  type?: InputType;
+  url: string;
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS';
+  type?: InputType;
   rules?: RuleHandler[];
 };
