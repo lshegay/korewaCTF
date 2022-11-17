@@ -2,10 +2,12 @@ import { authorized } from '../../rules/auth.ts';
 import { manipulator } from '../../setup/manipulator.ts';
 import { config } from '../../mod.ts';
 
-export const post = manipulator.useRoute({
+export const files = manipulator.useRoute({
   url: '/files/{file*}',
   rules: [authorized()],
-  resolve: ({ h }) => {
-    return h.directory(config.publicDir);
+  resolve: async ({ h, req }) => {
+    // TODO: change response stuff
+    req.response.body = (await h.directory(config.publicDir)).body;
+    return req.response;
   },
 });

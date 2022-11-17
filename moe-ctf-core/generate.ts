@@ -1,4 +1,5 @@
-const exportFolders = '../moe-ctf-admin/src/types';
+const exportFolders = '../moe-ctf-admin/src/utils';
+const exportFolders2 = '../moe-ctf-front/src/utils';
 
 const filesMap = new Set(['types.ts']);
 
@@ -22,8 +23,14 @@ const readAllFiles = async (dirName: string) => {
 
 await readAllFiles('./app/resolvers');
 await Deno.writeTextFile(new URL(`${exportFolders}/types.ts`, import.meta.url), typesFiles);
+await Deno.writeTextFile(new URL(`${exportFolders2}/types.ts`, import.meta.url), typesFiles);
 
 await Deno.copyFile(
   new URL('./app/utils/pogo-resolver/jsend.ts', import.meta.url),
   new URL(`${exportFolders}/jsend.ts`, import.meta.url),
+);
+
+await Deno.copyFile(
+  new URL('./app/utils/pogo-resolver/jsend.ts', import.meta.url),
+  new URL(`${exportFolders2}/jsend.ts`, import.meta.url),
 );

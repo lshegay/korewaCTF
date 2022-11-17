@@ -10,6 +10,8 @@ export type Task = {
   content: string;
   flag: string;
   filePath?: string;
+  score?: number;
   tags: string[];
   solved: TaskSolved;
+  isSolved?: boolean;
 };

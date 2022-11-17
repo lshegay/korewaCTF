@@ -44,7 +44,9 @@ export const scoreboard = manipulator.useRoute({
     });
 
     const scoreboardArray = Array.from(scoreboard)
-      .sort(([_1, u1], [_2, u2]) => u1.score - u2.score);
+      .sort(([_1, u1], [_2, u2]) =>
+        u2.score == u1.score ? u1.date - u2.date : u2.score - u1.score
+      );
 
     return res.success({ scoreboard: scoreboardArray });
   },

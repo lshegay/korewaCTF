@@ -4,7 +4,7 @@ import { defineStorage } from './setup/storage.ts';
 import { defineSecret } from './setup/jwt.ts';
 import { defineSalt } from './setup/crypto.ts';
 import { manipulator } from './setup/manipulator.ts';
-import { cors } from './rules/cors.ts';
+import { cors, CorsOptions } from './rules/cors.ts';
 
 import './resolvers/mod.ts';
 
@@ -17,22 +17,23 @@ type ApplicationOptions = {
   maxPoints: number;
   start?: number; // ms
   finish?: number; // ms
-  cors?: string[];
+  cors?: Partial<CorsOptions>;
 };
 export let config!: ApplicationOptions;
 
 export default async (
   port = 4000,
-  options: ApplicationOptions = {
+  options?: Partial<ApplicationOptions>,
+) => {
+  config = {
     moeDir: './.moe',
     storageDir: './storage',
     publicDir: './public',
     sessionAge: 604800000, // week in ms
     secure: false,
     maxPoints: 500,
-  },
-) => {
-  config = options;
+    ...options,
+  };
 
   await defineSecret(config.moeDir);
   await defineSalt(config.moeDir);
@@ -44,7 +45,7 @@ export default async (
   manipulator.attach(router);
   manipulator.middlewares.push(cors({
     exposedHeaders: ['Authorization'],
-    origin: ['http://localhost:3000'],
+    ...config.cors,
   }));
 
   console.log(`Server is started on "http://localhost:${port}" c:`);
