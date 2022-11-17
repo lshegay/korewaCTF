@@ -1,3 +1,3 @@
 export const config = {
-  host: 'http://localhost:4000/api',
+  host: Deno.env.get('HOST_API') ?? 'http://localhost:4000/api',
 };
