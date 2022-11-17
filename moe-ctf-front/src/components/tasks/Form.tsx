@@ -85,14 +85,14 @@ const TaskForm = ({ task, onSuccess, className, ...attrs }: Props) => {
             setSubmitting(false);
           }}
         >
-          {({ values, errors, setFieldValue, handleSubmit }) => (
+          {({ errors, handleSubmit }) => (
             <Form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <div className="text-xs">{task?.score} points</div>
               </div>
               <div className="mb-4">
                 <label className="mb-2 inline-block">Description</label>
-                <div className="text-sm">{task?.content}</div>
+                <div className="text-sm whitespace-pre-wrap">{task?.content}</div>
               </div>
               {task?.filePath && (
                 <div className="mb-4 text-sm">

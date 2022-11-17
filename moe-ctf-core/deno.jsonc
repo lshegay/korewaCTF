@@ -5,7 +5,7 @@
   "importMap": "./import_map.json",
   "fmt": {
     "files": {
-      "include": ["./app", "./serve.ts", "./generate.ts"]
+      "include": ["./app", "./serve.ts", "./generate.ts", "./create-storage.ts"]
     },
     "options": {
       "indentWidth": 2,
@@ -17,6 +17,7 @@
   "tasks": {
     "dev": "deno run --watch --allow-read --allow-write --allow-net --allow-env serve.ts",
     "generate": "deno run --allow-read --allow-write generate.ts",
-    "start": "deno run --allow-read --allow-write --allow-net --allow-env serve.ts"
+    "start": "deno run --allow-read --allow-write --allow-net --allow-env serve.ts",
+    "create": "deno run --allow-read --allow-write --unstable create-storage.ts"
   }
 }

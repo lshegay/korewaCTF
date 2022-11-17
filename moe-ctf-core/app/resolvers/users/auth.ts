@@ -1,10 +1,10 @@
 import { z } from 'zod';
 import { nanoid } from 'nanoid';
 
+import { UserRole } from './mod.ts';
 import { config } from '../../mod.ts';
 import { createToken } from '../../setup/jwt.ts';
 import { storage } from '../../setup/storage.ts';
-import { UserRole } from './mod.ts';
 import { manipulator } from '../../setup/manipulator.ts';
 import { createPbkdf2Hash } from '../../setup/crypto.ts';
 import { authorized } from '../../rules/auth.ts';

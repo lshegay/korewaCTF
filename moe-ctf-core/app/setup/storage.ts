@@ -1,9 +1,9 @@
 import { Database, DatabaseConfig } from 'aloedb';
 import { resolve } from 'path';
 
-import { User } from '../resolvers/users/mod.ts';
-import { Task } from '../resolvers/tasks/mod.ts';
-import { Post } from '../resolvers/posts/types.ts';
+import type { User } from '../resolvers/users/mod.ts';
+import type { Task } from '../resolvers/tasks/mod.ts';
+import type { Post } from '../resolvers/posts/types.ts';
 
 type Storage = {
   users: Database<User>;
@@ -34,28 +34,28 @@ export const defineStorage = async (
       autosave: true,
       optimize: true,
       pretty: false,
-      path: resolve(dir, 'users.json'),
+      path: `${dir}/users.json`,
     }),
     tasks: new Database({
       ...options,
       autosave: true,
       optimize: true,
       pretty: false,
-      path: resolve(dir, 'tasks.json'),
+      path: `${dir}/tasks.json`,
     }),
     posts: new Database({
       ...options,
       autosave: true,
       optimize: true,
       pretty: false,
-      path: resolve(dir, 'posts.json'),
+      path: `${dir}/posts.json`,
     }),
     settings: new Database({
       ...options,
       autosave: true,
       optimize: true,
       pretty: false,
-      path: resolve(dir, 'settings.json'),
+      path: `${dir}/settings.json`,
     }),
   };
 
