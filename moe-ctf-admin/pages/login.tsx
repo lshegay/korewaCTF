@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import { Formik, Form, Field } from 'formik';
 
 import { ky } from '@setup/ky';
