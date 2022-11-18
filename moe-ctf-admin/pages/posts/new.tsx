@@ -13,7 +13,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Task</title>
+        <title>Create Post</title>
       </Head>
       <div className="flex flex-col">
         <Header />
