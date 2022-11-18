@@ -20,6 +20,7 @@ const Home: NextPage = () => {
   const { data, isValidating, mutate } = useSWR<jsend.Response<Task, any, any>>(
     `task?id=${tid}`,
     fetcher,
+    { revalidateOnFocus: false },
   );
 
   const tableRows = useMemo(() => {

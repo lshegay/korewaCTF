@@ -66,14 +66,13 @@ const TaskForm = ({ task, onSuccess, className, ...attrs }: Props) => {
             content: task?.content ?? '',
             flag: '',
             tags: task?.tags ?? [],
-            fileData: null as Blob | null,
+            file: null as Blob | null,
           }}
           onSubmit={async (values, { setErrors, setSubmitting }) => {
             const formData = serialize(
               {
                 ...values,
                 flag: values.flag.length > 0 ? values.flag : undefined,
-                filePath: values.fileData,
               },
               {
                 nullsAsUndefineds: true,
@@ -94,7 +93,7 @@ const TaskForm = ({ task, onSuccess, className, ...attrs }: Props) => {
               case jsend.Status.FAIL: {
                 setErrors({
                   ...(response.data as Record<keyof Task, string>),
-                  fileData: response.data?.filePath,
+                  file: response.data?.filePath,
                 });
                 break;
               }
@@ -170,14 +169,14 @@ const TaskForm = ({ task, onSuccess, className, ...attrs }: Props) => {
                       const { files } = e.target as HTMLInputElement;
                       if (!files?.length) return;
 
-                      setFieldValue('fileData', files[0]);
+                      setFieldValue('file', files[0]);
                     }}
                   />
                   <span className="text-gray-400">
                     {task?.filePath ? 'Exists' : ''}
                   </span>
                 </div>
-                <p className="text-sm text-critical-500">{errors.fileData}</p>
+                <p className="text-sm text-critical-500">{errors.file}</p>
               </div>
               <div className="mb-2 flex">
                 <button

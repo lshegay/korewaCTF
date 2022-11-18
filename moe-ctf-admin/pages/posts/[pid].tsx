@@ -18,6 +18,9 @@ const Home: NextPage = () => {
   const { data, isValidating, mutate } = useSWR<jsend.Response<Post, any, any>>(
     `post?id=${pid}`,
     fetcher,
+    {
+      revalidateOnFocus: false,
+    },
   );
 
   return (
