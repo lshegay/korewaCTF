@@ -108,9 +108,16 @@ const TaskForm = ({ task, onSuccess, className, ...attrs }: Props) => {
                           : task.filePath;
 
                       const blob = await ky.get(filePath).blob();
+                      const fileUrl = window.URL.createObjectURL(blob);
+                      const fileName = task.filePath.split('/');
 
-                      const file = window.URL.createObjectURL(blob);
-                      window.open(file, '_blank');
+                      const a = document.createElement("a");
+                      document.body.appendChild(a);
+                      a.href = fileUrl;
+                      a.download = fileName[fileName.length - 1];
+                      a.target = '_blank';
+                      a.click();
+                      a.remove();
                     }}
                   >
                     {task.filePath}
