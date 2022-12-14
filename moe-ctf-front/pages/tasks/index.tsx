@@ -17,7 +17,7 @@ const Page: NextPage = () => {
   const router = useRouter();
   const { data, isValidating } = useSWR<
     jsend.Response<{ tasks: Task[] }, any, any>
-  >('tasks', fetcher);
+  >('tasks?limit=100', fetcher);
 
   const tasks = useMemo(() => {
     if (!isValidating && data?.status == 'success') {

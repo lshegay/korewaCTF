@@ -141,6 +141,7 @@ const TaskForm = ({ task, onSuccess, className, ...attrs }: Props) => {
                   onChange={(v) => setFieldValue('tags', v)}
                 />
                 <p className="text-sm text-critical-500">{errors.flag}</p>
+                <p className="text-sm text-gray-500 mt-1">You need hit Enter to add a new tag.</p>
               </div>
               <div className="mb-4">
                 <label htmlFor="content" className="mb-2 inline-block text-sm">

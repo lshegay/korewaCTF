@@ -16,7 +16,7 @@ const Home: NextPage = () => {
   const router = useRouter();
   const { data, isValidating } = useSWR<
     jsend.Response<{ tasks: Task[] }, any, any>
-  >('tasks', fetcher);
+  >('tasks?limit=100', fetcher);
 
   const tasks = useMemo(() => {
     if (!isValidating && data?.status == 'success') {
@@ -27,11 +27,11 @@ const Home: NextPage = () => {
           className="block rounded-lg border border-neutral-200 p-7 transition-colors hover:border-neutral-400"
         >
           <h5>{name}</h5>
-          <div className="mb-3">
+          <div className="mb-3 flex overflow-x-auto">
             {tags.map((tag) => (
               <span
                 key={tag}
-                className="mr-1 rounded-full border-2 border-black py-0.5 px-2 text-sm font-bold text-black"
+                className="mr-1 rounded-full border-2 border-black py-0.5 px-2 text-sm font-bold text-black whitespace-nowrap"
               >
                 {tag}
               </span>

@@ -15,7 +15,7 @@ const Page: NextPage = () => {
   const router = useRouter();
   const { data, isValidating } = useSWR<
     jsend.Response<{ posts: Post[] }, any, any>
-  >('posts', fetcher);
+  >('posts?limit=100', fetcher);
 
   const posts = useMemo(() => {
     if (
@@ -38,7 +38,7 @@ const Page: NextPage = () => {
                 day: 'numeric',
               }).format(new Date(created))}
             </p>
-            <p>{content}</p>
+            <p className="break-words">{content}</p>
           </div>
         ))
         .toArray();
